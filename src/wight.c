@@ -70,5 +70,9 @@ int main(int argc, char **argv)
 
     interpret(result.program);
 
+    free(result.program);
+    free(tokens);
+    munmap(program, length);
+
     return 0;
 }

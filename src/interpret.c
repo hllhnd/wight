@@ -55,6 +55,8 @@ int interpret(const struct Instruction *instructions)
 
 #define DISPATCH() goto *dispatch_table[instructions[pc].opcode]
 
+    DISPATCH();
+
     add_data: {
         data[dp] += instructions[pc].operand;
         pc += 1;

@@ -106,13 +106,13 @@ struct InstructionizationResult instructionize_program(const enum Token *const t
     instructions[i].opcode = OpTerminate;
 
     /* reallocate instruction buffer */
-    tmp = realloc(instructions, i * sizeof(struct Instruction));
+    tmp = realloc(instructions, (i + 1) * sizeof(struct Instruction));
     if (tmp != NULL) {
         instructions = tmp;
     }
 
     result.program = instructions;
-    result.length  = i;
+    result.length  = i + 1;
 
     return result;
 }
@@ -124,6 +124,10 @@ void print_instructions(const struct Instruction *const instructions,
 
     for (i = 0; i < length; i++) {
         switch (instructions[i].opcode) {
+            case OpTerminate: {
+                printf("OpTerminate\n");
+            } break;
+
             case OpAddData: {
                 printf("OpAddData(%u)\n", instructions[i].operand);
             } break;
@@ -157,7 +161,7 @@ void print_instructions(const struct Instruction *const instructions,
             } break;
 
             default: {
-                printf("Unknown opcode: %d\n", instructions[i].opcode);
+                printf("Unknown opcode: %d (%u)\n", instructions[i].opcode, instructions[i].operand);
             } break;
         }
     }
