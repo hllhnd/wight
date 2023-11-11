@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         return 2;
     }
 
-    interpret(result.program, result.length);
+    interpret(result.program);
 
     return 0;
 }

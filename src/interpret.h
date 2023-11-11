@@ -17,4 +17,4 @@
 
 #include "bytecode.h"
 
-int interpret(const struct Instruction *instructions, size_t length);
+int interpret(const struct Instruction *instructions);

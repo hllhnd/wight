@@ -20,12 +20,13 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define OpTerminate 0
 #define OpAddData   1
 #define OpSubData   2
 #define OpAddPtr    3
 #define OpSubPtr    4
-#define OpRead      5
-#define OpWrite     6
+#define OpWrite     5
+#define OpRead      6
 #define OpBiz       7
 #define OpBnz       8
 

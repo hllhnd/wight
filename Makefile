@@ -3,7 +3,7 @@ BIN		:= wight
 CC		:= clang
 LD		:= clang
 
-CFLAGS	:= -g -fwrapv -O3 -std=c89 -Wall -Wextra -Wpedantic -Wno-gnu-binary-literal
+CFLAGS	:= -g -fwrapv -O3 -std=c89 -Wall -Wextra -Wpedantic -Wno-gnu-label-as-value
 LDFLAGS	:= -g
 
 BIN_DIR	:= bin

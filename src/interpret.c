@@ -20,13 +20,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int interpret(const struct Instruction *instructions,
-              const size_t              length)
+int interpret(const struct Instruction *instructions)
 {
     uint8_t *data; /* data buffer */
     size_t   dp;   /* data pointer */
     size_t   i;    /* loop counter */
     size_t   pc;   /* program counter */
+
+    static void* dispatch_table[] = {
+        &&end,
+        &&add_data,
+        &&sub_data,
+        &&add_ptr,
+        &&sub_ptr,
+        &&write,
+        &&read,
+        &&biz,
+        &&bnz
+    };
 
     pc = 0;
     dp = 0;
@@ -42,47 +53,57 @@ int interpret(const struct Instruction *instructions,
         data[i] = 0;
     }
 
-    while (pc < length) {
-        switch (instructions[pc].opcode) {
-            case OpAddData: {
-                data[dp] += instructions[pc].operand;
-            } break;
+#define DISPATCH() goto *dispatch_table[instructions[pc].opcode]
 
-            case OpSubData: {
-                data[dp] -= instructions[pc].operand;
-            } break;
+    add_data: {
+        data[dp] += instructions[pc].operand;
+        pc += 1;
+    } DISPATCH();
 
-            case OpAddPtr: {
-                dp += instructions[pc].operand;
-            } break;
+    sub_data: {
+        data[dp] -= instructions[pc].operand;
+        pc += 1;
+    } DISPATCH();
 
-            case OpSubPtr: {
-                dp -= instructions[pc].operand;
-            } break;
+    add_ptr: {
+        dp += instructions[pc].operand;
+        pc += 1;
+    } DISPATCH();
 
-            case OpWrite: {
-                putchar(data[dp]);
-            } break;
+    sub_ptr: {
+        dp -= instructions[pc].operand;
+        pc += 1;
+    } DISPATCH();
 
-            case OpRead: {
-                data[dp] = getchar();
-            } break;
+    write: {
+        putchar(data[dp]);
+        pc += 1;
+    } DISPATCH();
 
-            case OpBiz: {
-                if (data[dp] == 0) {
-                    pc = instructions[pc].operand;
-                }
-            } break;
+    read: {
+        data[dp] = getchar();
+        pc += 1;
+    } DISPATCH();
 
-            case OpBnz: {
-                if (data[dp] != 0) {
-                    pc = instructions[pc].operand;
-                }
-            } break;
+    biz: {
+        if (data[dp] == 0) {
+            pc = instructions[pc].operand;
+        } else {
+            pc += 1;
         }
-        pc++;
-    }
+    } DISPATCH();
 
+    bnz: {
+        if (data[dp] != 0) {
+            pc = instructions[pc].operand;
+        } else {
+            pc += 1;
+        }
+    } DISPATCH();
+
+#undef DISPATCH
+
+end:
     free(data);
     return 0;
 }

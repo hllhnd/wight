@@ -35,7 +35,7 @@ struct InstructionizationResult instructionize_program(const enum Token *const t
     sp = 0;
 
     /* allocate instruction buffer */
-    instructions = malloc(length * sizeof(struct Instruction));
+    instructions = malloc((length + 1) * sizeof(struct Instruction));
     if (instructions == NULL) {
         result.program = NULL;
         return result;
@@ -101,6 +101,9 @@ struct InstructionizationResult instructionize_program(const enum Token *const t
             }
         }
     }
+
+    /* append termination opcode */
+    instructions[i].opcode = OpTerminate;
 
     /* reallocate instruction buffer */
     tmp = realloc(instructions, i * sizeof(struct Instruction));
